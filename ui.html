@@ -1,0 +1,71 @@
+<!--Header-->
+<h1>CSS to Figma</h1>
+
+<!-- Short app explanation -->
+<p>아래 인풋창에 CSS 코드를 붙여넣어 주세요.</p>
+
+<!--Asks user for a hex color value-->
+<textarea id="css-input"></textarea>
+
+<!--Submit button-->
+<button id="button">적용하기</button>
+
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 24px;
+  }
+  h1 {
+    margin-bottom: 0;
+  }
+  p {
+    margin-top: 8px;
+    color: #777777;
+  }
+  textarea {
+    border-radius: 8px;
+    border-color: #777777;
+    resize: none;
+    width: 400px;
+    height: 400px;
+    padding: 12px;
+  }
+
+  input {
+    font-size: 14px;
+    margin-top: 3px;
+    border-style: none;
+    border-bottom-style: ;
+    outline: none;
+    font-weight: 600;
+  }
+  button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-weight: 700;
+    border-radius: 6px;
+    border: none;
+  }
+  button:hover {
+    background-color: #cccccc;
+  }
+  button:active {
+    background-color: #777777;
+  }
+</style>
+
+<script>
+  //Creates variables that allow us to access the HTML components
+  const cssInput = document.getElementById("css-input");
+  const button = document.getElementById("button");
+
+  //Takes input values and shares them with your Figma code
+  function whenButtonIsClicked() {
+    const css = cssInput.value;
+    //Sends your values to your Figma code. * is the code's worker address
+    parent.postMessage({ pluginMessage: css }, "*");
+  }
+
+  //creates a listener that will activate whenever the button is clicked
+  button.addEventListener("click", whenButtonIsClicked);
+</script>
