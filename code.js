@@ -41,7 +41,7 @@ figma.ui.onmessage = async (msg) => {
           "COLOR"
         );
 
-        // HEX 색상 변환 후 모드 값 설정!
+        // HEX 색상 변환 후 모드 값 설정
         const color = hexToFigmaColor(variableValue);
         variable.setValueForMode(modeId, color);
       }
