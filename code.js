@@ -25,7 +25,7 @@ figma.ui.onmessage = async (msg) => {
     // Step 1: CSS 변수 파싱
     const lines = cssText.split("\n").filter((line) => line.trim() !== "");
     const collection = figma.variables.createVariableCollection("CSS Colors");
-    const modeId = collection.modes[0].modeId; // 기본적으로 단일 모드(Value)
+    const modeId = collection.modes[0].modeId; // 기본적으로 단일 모드(Value)!
 
     for (const line of lines) {
       const match = line.match(/--([^:]+):\s*([^;]+);/);
