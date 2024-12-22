@@ -4,6 +4,17 @@
 <!-- Short app explanation -->
 <p>아래 인풋창에 CSS 코드를 붙여넣어 주세요.</p>
 
+<div class="tab-container">
+  <div class="tabs">
+    <button class="tab active" data-tab="style">Style로 적용</button>
+    <button class="tab" data-tab="variable">Variable로 적용</button>
+  </div>
+  <div class="tab-content">
+    <div class="content active" id="style"></div>
+    <div class="content" id="variable"></div>
+  </div>
+</div>
+
 <!--Asks user for a hex color value-->
 <textarea id="css-input"></textarea>
 
@@ -52,6 +63,57 @@
   button:active {
     background-color: #777777;
   }
+
+  .tab-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid #e0e0e0;
+    background-color: #f1f1f1;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 15px 0;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .tab:hover {
+    background-color: #ddd;
+  }
+
+  .tab.active {
+    background-color: #ffffff;
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    font-weight: bold;
+  }
+
+  .tab-content {
+    padding: 20px;
+  }
+
+  .content {
+    display: none;
+  }
+
+  .content.active {
+    display: block;
+  }
 </style>
 
 <script>
@@ -68,4 +130,23 @@
 
   //creates a listener that will activate whenever the button is clicked
   button.addEventListener("click", whenButtonIsClicked);
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabs = document.querySelectorAll(".tab");
+    const contents = document.querySelectorAll(".content");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        // 현재 활성화된 탭과 콘텐츠를 비활성화
+        document.querySelector(".tab.active").classList.remove("active");
+        document.querySelector(".content.active").classList.remove("active");
+
+        // 클릭한 탭을 활성화
+        tab.classList.add("active");
+
+        // 해당하는 콘텐츠를 활성화
+        const contentId = tab.getAttribute("data-tab");
+        document.getElementById(contentId).classList.add("active");
+      });
+    });
+  });
 </script>
