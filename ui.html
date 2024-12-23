@@ -4,22 +4,17 @@
 <!-- Short app explanation -->
 <p>아래 인풋창에 CSS 코드를 붙여넣어 주세요.</p>
 
-<div class="tab-container">
-  <div class="tabs">
-    <button class="tab active" data-tab="style">Style로 적용</button>
-    <button class="tab" data-tab="variable">Variable로 적용</button>
-  </div>
-  <div class="tab-content">
-    <div class="content active" id="style"></div>
-    <div class="content" id="variable"></div>
-  </div>
+<div class="tabs">
+  <div class="slider"></div>
+  <button class="tab-button active" data-index="0">CSS to Variables</button>
+  <button class="tab-button" data-index="1">CSS to Styles</button>
 </div>
 
 <!--Asks user for a hex color value-->
 <textarea id="css-input"></textarea>
 
 <!--Submit button-->
-<button id="button">Apply</button>
+<button class="apply-button">Apply</button>
 
 <style>
   body {
@@ -37,7 +32,7 @@
     border-radius: 8px;
     border-color: #777777;
     resize: none;
-    width: 400px;
+    width: 100%;
     height: 400px;
     padding: 12px;
   }
@@ -46,73 +41,73 @@
     font-size: 14px;
     margin-top: 3px;
     border-style: none;
-    border-bottom-style: ;
     outline: none;
     font-weight: 600;
   }
-  button {
+  .apply-button {
     margin-top: 10px;
     padding: 10px 20px;
     font-weight: 700;
     border-radius: 6px;
     border: none;
   }
-  button:hover {
+  .apply-button:hover {
     background-color: #cccccc;
   }
-  button:active {
+  .apply-button:active {
     background-color: #777777;
   }
-
-  .tab-container {
-    width: 80%;
-    max-width: 800px;
-    margin: 50px auto;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-
   .tabs {
-    display: flex;
-    border-bottom: 2px solid #e0e0e0;
-    background-color: #f1f1f1;
+    display: inline-flex;
+    background-color: #e5e5e5;
+    border-radius: 8px;
+    padding: 2px;
+    width: 396px;
+    height: auto;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
   }
 
-  .tab {
+  .tab-button {
     flex: 1;
-    padding: 15px 0;
-    text-align: center;
-    cursor: pointer;
-    background-color: #f1f1f1;
+    padding: 10px 20px;
     border: none;
-    outline: none;
-    font-size: 16px;
-    transition: background-color 0.3s, color 0.3s;
+    background-color: transparent;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1; /* slider 아래로 들어가지 않게 */
+    transition: color 0.3s;
   }
 
-  .tab:hover {
-    background-color: #ddd;
+  .tab-button:not(:last-child) {
+    margin-right: 4px;
   }
 
-  .tab.active {
-    background-color: #ffffff;
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
-    font-weight: bold;
+  .tab-button:hover {
+    color: #000;
+    background-color: #ffffff80;
   }
 
-  .tab-content {
-    padding: 20px;
+  .tab-button.active {
+    color: black;
   }
 
-  .content {
-    display: none;
-  }
-
-  .content.active {
-    display: block;
+  /* 슬라이더 */
+  .slider {
+    position: absolute;
+    top: 107px;
+    left: 26px;
+    width: 196px; /* 버튼 크기만큼 조정 */
+    height: 36px;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    z-index: 0; /* 버튼 뒤에 위치 */
   }
 </style>
 
@@ -127,26 +122,22 @@
     //Sends your values to your Figma code. * is the code's worker address
     parent.postMessage({ pluginMessage: css }, "*");
   }
+  const buttons = document.querySelectorAll(".tab-button");
+  const slider = document.querySelector(".slider");
 
-  //creates a listener that will activate whenever the button is clicked
-  button.addEventListener("click", whenButtonIsClicked);
-  document.addEventListener("DOMContentLoaded", () => {
-    const tabs = document.querySelectorAll(".tab");
-    const contents = document.querySelectorAll(".content");
+  buttons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      // 현재 활성화된 버튼에서 active 클래스 제거
+      document.querySelector(".tab-button.active")?.classList.remove("active");
+      button.classList.add("active");
 
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        // 현재 활성화된 탭과 콘텐츠를 비활성화
-        document.querySelector(".tab.active").classList.remove("active");
-        document.querySelector(".content.active").classList.remove("active");
-
-        // 클릭한 탭을 활성화
-        tab.classList.add("active");
-
-        // 해당하는 콘텐츠를 활성화
-        const contentId = tab.getAttribute("data-tab");
-        document.getElementById(contentId).classList.add("active");
-      });
+      // 슬라이더 위치 변경
+      const sliderPosition = index * (button.offsetWidth + 4); // 버튼 너비 * 인덱스
+      slider.style.transform = `translateX(${sliderPosition}px)`;
     });
   });
+
+  // 초기화 (첫 번째 버튼 활성화)
+  buttons[0].classList.add("active");
+  slider.style.transform = `translateX(0px)`;
 </script>

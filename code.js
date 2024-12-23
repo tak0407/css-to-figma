@@ -2,7 +2,7 @@
 figma.showUI(__html__);
 
 //Resizes your plugin UI in pixels
-figma.ui.resize(448, 600);
+figma.ui.resize(448, 648);
 figma.ui.onmessage = async (msg) => {
   const cssText = msg;
 
