@@ -66,12 +66,25 @@ figma.ui.onmessage = async (msg) => {
 
 // HEX 색상을 Figma COLOR 포맷으로 변환
 function hexToFigmaColor(hex) {
-  const match = hex.match(/^#([A-Fa-f0-9]{6})$/);
-  if (!match) throw new Error(`Invalid hex color: ${hex}`);
+  const shortHexMatch = hex.match(/^#([A-Fa-f0-9]{3})$/); // 3글자 HEX
+  const longHexMatch = hex.match(/^#([A-Fa-f0-9]{6})$/); // 6글자 HEX
 
-  const r = parseInt(match[1].substring(0, 2), 16) / 255;
-  const g = parseInt(match[1].substring(2, 4), 16) / 255;
-  const b = parseInt(match[1].substring(4, 6), 16) / 255;
+  let r, g, b;
+
+  if (shortHexMatch) {
+    // 3글자 HEX 처리
+    const [rShort, gShort, bShort] = shortHexMatch[1].split("");
+    r = parseInt(rShort + rShort, 16) / 255;
+    g = parseInt(gShort + gShort, 16) / 255;
+    b = parseInt(bShort + bShort, 16) / 255;
+  } else if (longHexMatch) {
+    // 6글자 HEX 처리
+    r = parseInt(longHexMatch[1].substring(0, 2), 16) / 255;
+    g = parseInt(longHexMatch[1].substring(2, 4), 16) / 255;
+    b = parseInt(longHexMatch[1].substring(4, 6), 16) / 255;
+  } else {
+    throw new Error(`Invalid hex color: ${hex}`);
+  }
 
   return { r, g, b };
 }
