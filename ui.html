@@ -118,30 +118,33 @@
 <script>
   //Creates variables that allow us to access the HTML components
   const cssInput = document.getElementById("css-input");
-  const button = document.getElementById("button");
+  const applyButton = document.querySelector(".apply-button");
 
-  //Takes input values and shares them with your Figma code
-  function whenButtonIsClicked() {
-    const css = cssInput.value;
-    //Sends your values to your Figma code. * is the code's worker address
-    parent.postMessage({ pluginMessage: css }, "*");
-  }
+  let currentTab = 0; // 기본은 탭 1 (변수 등록)
+
+  // 탭 버튼 이벤트 리스너
   const buttons = document.querySelectorAll(".tab-button");
   const slider = document.querySelector(".slider");
 
   buttons.forEach((button, index) => {
     button.addEventListener("click", () => {
-      // 현재 활성화된 버튼에서 active 클래스 제거
       document.querySelector(".tab-button.active")?.classList.remove("active");
       button.classList.add("active");
 
-      // 슬라이더 위치 변경
-      const sliderPosition = index * (button.offsetWidth + 4); // 버튼 너비 * 인덱스
+      const sliderPosition = index * (button.offsetWidth + 4);
       slider.style.transform = `translateX(${sliderPosition}px)`;
+      currentTab = index; // 현재 탭 업데이트
     });
   });
 
-  // 초기화 (첫 번째 버튼 활성화)
-  buttons[0].classList.add("active");
-  slider.style.transform = `translateX(0px)`;
+  // 버튼 클릭 이벤트
+  applyButton.addEventListener("click", () => {
+    const css = cssInput.value;
+    parent.postMessage(
+      {
+        pluginMessage: { type: currentTab === 0 ? "variables" : "styles", css },
+      },
+      "*"
+    );
+  });
 </script>
