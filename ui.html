@@ -2,7 +2,7 @@
 <h1>CSS to Figma</h1>
 
 <!-- Short app explanation -->
-<p>아래 인풋창에 CSS 코드를 붙여넣어 주세요.</p>
+<p>Please paste css code to textarea!</p>
 
 <div class="tabs">
   <div class="slider"></div>
@@ -45,11 +45,15 @@
     font-weight: 600;
   }
   .apply-button {
+    display: block;
     margin-top: 10px;
+    margin-left: auto;
     padding: 10px 20px;
     font-weight: 700;
     border-radius: 6px;
     border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
   }
   .apply-button:hover {
     background-color: #cccccc;
@@ -73,7 +77,7 @@
     padding: 10px 20px;
     border: none;
     background-color: transparent;
-    color: #555;
+    color: #999;
     font-size: 14px;
     font-weight: 500;
     border-radius: 6px;
@@ -88,18 +92,18 @@
   }
 
   .tab-button:hover {
-    color: #000;
     background-color: #ffffff80;
   }
 
   .tab-button.active {
     color: black;
+    font-weight: 700;
   }
 
   /* 슬라이더 */
   .slider {
     position: absolute;
-    top: 107px;
+    top: 105.5px;
     left: 26px;
     width: 196px; /* 버튼 크기만큼 조정 */
     height: 36px;
