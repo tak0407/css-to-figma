@@ -4,52 +4,67 @@ figma.showUI(__html__);
 //Resizes your plugin UI in pixels
 figma.ui.resize(448, 648);
 figma.ui.onmessage = async (msg) => {
-  const cssText = msg;
+  const { type, css } = msg;
 
-  // Variables API 지원 여부 확인
-  if (
-    !figma.variables ||
-    typeof figma.variables.createVariableCollection !== "function"
-  ) {
-    figma.notify("Variables API is not supported in this environment.");
-    figma.closePlugin();
-    return;
-  }
-
-  if (!cssText || typeof cssText !== "string") {
-    figma.notify("Invalid input. Please provide valid CSS variables.");
+  if (!css || typeof css !== "string") {
+    figma.notify("Invalid input. Please provide valid CSS.");
     return;
   }
 
   try {
+<<<<<<< HEAD
     // Step 1: CSS 변수 파싱
     const lines = cssText.split("\n").filter((line) => line.trim() !== "");
     const collection = figma.variables.createVariableCollection("CSS Colors");
     const modeId = collection.modes[0].modeId; // 기본적으로 단일 모드(Value)!
+=======
+    const lines = css.split("\n").filter((line) => line.trim() !== "");
+    if (type === "variables") {
+      // 변수 생성 로직
+      const collection = figma.variables.createVariableCollection("CSS Colors");
+      const modeId = collection.modes[0].modeId;
+>>>>>>> develop
 
-    for (const line of lines) {
-      const match = line.match(/--([^:]+):\s*([^;]+);/);
-      if (match) {
-        const variableNameRaw = match[1].trim();
-        const variableValue = match[2].trim();
+      for (const line of lines) {
+        const match = line.match(/--([^:]+):\s*([^;]+);/);
+        if (match) {
+          const variableNameRaw = match[1].trim();
+          const variableValue = match[2].trim();
 
-        // 슬래시 구조로 Variable 이름 변환
-        const variableName = variableNameRaw.replace(/-/g, "/");
-        const variable = figma.variables.createVariable(
-          variableName,
-          collection,
-          "COLOR"
-        );
+          const variableName = variableNameRaw.replace(/-/g, "/");
+          const variable = figma.variables.createVariable(
+            variableName,
+            collection,
+            "COLOR"
+          );
 
-        // HEX 색상 변환 후 모드 값 설정
-        const color = hexToFigmaColor(variableValue);
-        variable.setValueForMode(modeId, color);
+          const color = hexToFigmaColor(variableValue);
+          variable.setValueForMode(modeId, color);
+        }
       }
-    }
 
-    figma.notify("Variables created successfully in single mode!");
+      figma.notify("Variables created successfully!");
+    } else if (type === "styles") {
+      // 스타일 생성 로직
+      for (const line of lines) {
+        const match = line.match(/--([^:]+):\s*([^;]+);/);
+        if (match) {
+          const styleNameRaw = match[1].trim();
+          const colorValue = match[2].trim();
+
+          const styleName = styleNameRaw.replace(/-/g, "/");
+          const paintStyle = figma.createPaintStyle();
+          paintStyle.name = styleName;
+
+          const color = hexToFigmaColor(colorValue);
+          paintStyle.paints = [{ type: "SOLID", color }];
+        }
+      }
+
+      figma.notify("Styles created successfully!");
+    }
   } catch (error) {
-    figma.notify("An error occurred while processing variables.");
+    figma.notify("An error occurred while processing your input.");
     console.error(error);
   }
 
